@@ -1,0 +1,27 @@
+use std::collections::HashSet;
+
+fn main() {
+    dbg!(check_inclusion("ab".to_string(), "eidboaoo".to_string()));
+}
+
+fn check_inclusion(s1: String, s2: String) -> bool {
+    if s1.len() > s2.len() {
+        return false;
+    }
+
+    let mut a1 = vec![0; 26];
+    let mut a2 = vec![0; 26];
+
+    let v1: Vec<u8> = s1.as_bytes().iter().map(|c| c - 'a' as u8).collect();
+    let v2: Vec<u8> = s2.as_bytes().iter().map(|c| c - 'a' as u8).collect();
+
+    for i in v1 {
+        a1[i as usize] += 1;
+        a2[i as usize] += 1;
+    }
+
+    println!("{:?} {:?}", a1, a2);
+
+
+    return true;
+}

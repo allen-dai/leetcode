@@ -1,0 +1,88 @@
+#![allow(dead_code)]
+
+use std::collections::HashMap;
+use std::ptr;
+
+fn main() {}
+
+struct Node {
+    key: i32,
+    val: i32,
+    prev: *mut Node,
+    next: *mut Node,
+}
+
+impl Node {
+    fn new(key: i32, val: i32) -> Self {
+        Self {
+            key,
+            val,
+            prev: ptr::null_mut(),
+            next: ptr::null_mut(),
+        }
+    }
+}
+
+struct DLinkedList {
+    head: Box<Node>,
+    tail: Box<Node>,
+}
+
+impl DLinkedList {
+    fn new() -> Self {
+        Self {
+            head: Box::new(Node::new(-1, -1)),
+            tail: Box::new(Node::new(-2, -2)),
+        }
+    }
+
+    fn insert(&mut self, node: *mut Node) {
+        unsafe {
+            let next = (*self.head).next;
+            (*node).next = &mut *next;
+            (*node).prev = &mut *self.head;
+            (*self.head).next = &mut *node;
+            (*next).prev = &mut *node;
+        }
+    }
+
+    fn remove(&mut self, node: *mut Node) {
+        unsafe {
+            let prev = (*node).prev;
+            let next = (*node).next;
+            (*prev).next = next;
+            (*next).prev = prev;
+        }
+    }
+}
+
+struct LRUCache {
+    capacity: i32,
+    cache: HashMap<i32, Box<Node>>,
+    list: DLinkedList,
+}
+
+impl LRUCache {
+    fn new(capacity: i32) -> Self {
+        Self {
+            capacity,
+            cache: HashMap::new(),
+            list: DLinkedList::new(),
+        }
+    }
+
+    fn get(&mut self, key: i32) -> i32 {
+        match self.cache.get_mut(&key) {
+            None => return -1,
+            Some(n) => {
+                self.list.remove(&mut **n);
+                self.list.insert(&mut **n);
+                n.val
+            }
+        }
+    }
+
+    fn put(&mut self, key: i32, value: i32) {
+
+    }
+}
