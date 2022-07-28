@@ -48,3 +48,33 @@ pub fn reverse_list(
         }
     }
 }
+
+/* -- For neetcode 
+pub fn reverse_list(
+    mut list1: Option<Box<ListNode>>,
+    mut list2: Option<Box<ListNode>>,
+) -> Option<Box<ListNode>> {
+    let mut dummy = Box::new(ListNode::new(-1));
+    let mut tail = &mut dummy;
+
+    while list1.is_some() && list2.is_some() {
+        if list1.as_ref().unwrap().val < list2.as_ref().unwrap().val {
+            let nxt = list1.as_mut().unwrap().next.take();
+            tail.next = list1;
+            list1 = nxt;
+        } else {
+            let nxt = list2.as_mut().unwrap().next.take();
+            tail.next = list2;
+            list2 = nxt;
+        }
+        tail = tail.next.as_mut().unwrap();
+    }
+
+    if list1.is_some() {
+        tail.next = list1;
+    } else if list2.is_some() {
+        tail.next = list2;
+    }
+
+    dummy.next
+} */
