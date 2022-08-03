@@ -28,42 +28,38 @@ impl Solution {
         root: Option<Rc<RefCell<TreeNode>>>,
         sub_root: Option<Rc<RefCell<TreeNode>>>,
     ) -> bool {
-        if root.is_none() {
-            return false;
-        }
-        fn dfs(t: &Option<Rc<RefCell<TreeNode>>>, s: &Option<Rc<RefCell<TreeNode>>>) -> bool {
-            if t.is_none() {
+        fn dfs(r: &Option<Rc<RefCell<TreeNode>>>, s: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+            if s.is_none() {
                 return true;
             }
-            if s.is_none() {
+            if r.is_none() {
                 return false;
             }
-            if dfs(t, s) {
+            if same_tree(r, s) {
                 return true;
             }
 
-            dfs(t, &s.as_ref().unwrap().borrow().left)
-                || dfs(t, &s.as_ref().unwrap().borrow().right)
+            dfs(&r.as_ref().unwrap().borrow().left, s)
+                || dfs(&r.as_ref().unwrap().borrow().right, s)
         }
 
-        if root.is_none() && sub_root.is_none() {
-            return true;
+        fn same_tree(r: &Option<Rc<RefCell<TreeNode>>>, s: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+            match (r, s) {
+                (Some(r_n), Some(s_n)) => {
+                    if r_n.borrow().val == s_n.borrow().val {
+                        same_tree(&r_n.borrow().left, &s_n.borrow().left)
+                            && same_tree(&r_n.borrow().right, &s_n.borrow().right)
+                    } else {
+                        return false;
+                    }
+                }
+
+                (None, None) => return true,
+
+                _ => return false,
+            }
         }
 
-        if root.is_none() || sub_root.is_none() {
-            return false;
-        }
-
-        if root.as_ref().unwrap().borrow().val == sub_root.as_ref().unwrap().borrow().val {
-            return dfs(
-                &root.as_ref().unwrap().borrow().left,
-                &sub_root.as_ref().unwrap().borrow().left,
-            ) && dfs(
-                &root.as_ref().unwrap().borrow().right,
-                &sub_root.as_ref().unwrap().borrow().right,
-            );
-        };
-
-        false
+        dfs(&root, &sub_root)
     }
 }
